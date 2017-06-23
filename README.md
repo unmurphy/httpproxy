@@ -34,13 +34,13 @@
 1. CAPTURE_MODE，抓包模式
 
 ```
-java -jar httpagent-0.0.1-SNAPSHOT.jar 0 data.json
+java -jar httpproxy-1.0-SNAPSHOT.jar 0 data.json
 ```
 
 2. FIDDLE_MODE，篡改模式
 
 ```
-java -jar httpagent-0.0.1-SNAPSHOT.jar 1 data.json
+java -jar httpproxy-1.0-SNAPSHOT.jar 1 data.json
 ```
 
 ## TODO
