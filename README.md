@@ -45,5 +45,7 @@ java -jar httpagent-0.0.1-SNAPSHOT.jar 1 data.json
 
 ## TODO
 1. 每个篡改规则加入sleep字段，即等待多久之后将response返回给客户端
+
 > 在CRM遇到过这样一个问题，部分接口响应如果发生延时情况下，页面上部分按钮仍可点击，会导致跳转页面里面很多按钮clickable 属性为disabled情况，可一定程度上用于模拟网络延时情况
+
 2. 加入标准的Http响应状态码，模拟各个状态码下app或者web是否有异常
