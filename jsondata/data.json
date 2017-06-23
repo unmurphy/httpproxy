@@ -1,0 +1,145 @@
+[
+    {
+        "path": "/api/v1/merchants",
+        "method": "get",
+        "response": {
+            "code": "200",
+            "message": "",
+            "data": {
+                "total_number": 1,
+                "total_page": 1,
+                "current_page": 1,
+                "data": [
+                    {
+                        "id": "58f7ec836597d000018dc029",
+                        "name": "murphy",
+                        "sn": "1680002786541",
+                        "core_biz_id": "1538b69d-2554-11e7-b68f-00163e00625b",
+                        "certificate": {},
+                        "business": {
+                            "legal_person_name": "992",
+                            "content": "",
+                            "license_photo": "http://images.wosaimg.com/05/810ec5718cf886c0da38f394205f78a4752cd8.jpg"
+                        },
+                        "owner": {
+                            "name": "",
+                            "mobile": ""
+                        },
+                        "contact": {
+                            "name": "",
+                            "mobile": "",
+                            "email": ""
+                        },
+                        "user": {
+                            "id": "58458b7f4cbef1b9948ffd05",
+                            "name": "王新昌"
+                        },
+                        "area": {
+                            "province_id": "110000",
+                            "province": "上海市",
+                            "city_id": "110100",
+                            "city": "",
+                            "district_id": "110102",
+                            "district": ""
+                        },
+                        "address": {
+                            "logitude": null,
+                            "latitude": null,
+                            "street_address": "松江大学城文汇路188号"
+                        },
+                        "verify_status": 0,
+                        "withdraw_mode": 2,
+                        "industry_id": null,
+                        "ctime": 1492642872000,
+                        "scope_id": null,
+                        "scope_name": null,
+                        "status": 1
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "path": "/api/v1/merchant_audits",
+        "method": "get",
+        "response": {
+            "code": "200",
+            "message": "",
+            "data": {
+                "total_number": 21,
+                "total_page": 2,
+                "current_page": 1,
+                "data": [
+                    {
+                        "id": "4767a500-75f0-42fa-8eda-acf3436a0aa5",
+                        "merchant_id": "25faa770-d7df-482a-9abf-b8f956e6189a",
+                        "merchant_sn": "1680002786535",
+                        "merchant_name": "10912341234验证商户11",
+                        "merchant_ctime": 1492590605552,
+                        "status": 3,
+                        "remark": "",
+                        "description": "这次给通过啦",
+                        "merchant_province": "内蒙古自治区",
+                        "merchant_city": "呼和浩特市",
+                        "merchant_district": "回民区",
+                        "merchant_street_address": "回民区1234号",
+                        "merchant_contact_name": "我是回民",
+                        "merchant_contact_cellphone": "10912341234",
+                        "brand_photo": "http://images.wosaimg.com/b8/7d48ca9f1d71a6e1aed7e75b2c3146246ce47f.png",
+                        "indoor_material_photo": "http://images.wosaimg.com/aa/ed8404c7bc75d3ca75aa23e32da3fbb20bb15c.png",
+                        "outdoor_material_photo": "http://images.wosaimg.com/eb/8098a59fe3496c38c27cb5a9cde2e495e2a75d.png",
+                        "other_photos": [
+                            "http://images.wosaimg.com/b8/7d48ca9f1d71a6e1aed7e75b2c3146246ce47f.png",
+                            "http://images.wosaimg.com/aa/ed8404c7bc75d3ca75aa23e32da3fbb20bb15c.png",
+                            "http://images.wosaimg.com/eb/8098a59fe3496c38c27cb5a9cde2e495e2a75d.png"
+                        ],
+                        "ctime": 1492590605779,
+                        "mtime": 1492594607390,
+                        "status_change_details": [
+                            {
+                                "operator_type": 1,
+                                "operator": "58ad5790e4b00858c8d74814",
+                                "operator_platform": "CRM",
+                                "status": 1,
+                                "remark": "哈哈1234！！！",
+                                "ctime": 1492594241104
+                            },
+                            {
+                                "operator_type": 2,
+                                "operator": "10911113333",
+                                "operator_platform": "osp",
+                                "status": 4,
+                                "ctime": 1492594501828,
+                                "remark": "驳回啦，不开心"
+                            },
+                            {
+                                "operator_type": 1,
+                                "operator": "58ad5790e4b00858c8d74814",
+                                "operator_platform": "CRM",
+                                "status": 1,
+                                "remark": "哈哈1234！！！",
+                                "ctime": 1492594582860
+                            },
+                            {
+                                "operator_type": 2,
+                                "operator": "10911113333",
+                                "operator_platform": "osp",
+                                "status": 3,
+                                "ctime": 1492594607390,
+                                "remark": "这次给通过啦"
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "path": "/api/v1/keeprecord/store/*",
+        "method": "post",
+        "response": {
+            "code": "10001",
+            "message": "维护人不能为空"
+        }
+    }
+]
