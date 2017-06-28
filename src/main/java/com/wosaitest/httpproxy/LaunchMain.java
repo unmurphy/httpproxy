@@ -5,6 +5,7 @@ import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.netty.handler.codec.http.*;
 import org.littleshoot.proxy.HttpFilters;
 import org.littleshoot.proxy.HttpFiltersAdapter;
 import org.littleshoot.proxy.HttpFiltersSourceAdapter;
@@ -17,10 +18,6 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.CompositeByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.http.FullHttpResponse;
-import io.netty.handler.codec.http.HttpObject;
-import io.netty.handler.codec.http.HttpRequest;
-import io.netty.handler.codec.http.HttpResponse;
 
 /**
  * Created by yangzhixiang on 2017/6/22.
@@ -32,7 +29,7 @@ public class LaunchMain {
     private static final String FIDDLE_TYPE = "FIDDLE_MODE";
     private static int type = 0;
     private static String data_file = "data.json";
-    private static Map<KeyPair, String> map = new HashMap<>();
+    private static Map<KeyPair, DataPair> map = new HashMap<>();
 
     public static void main(String[] args) {
         if (args.length == 1) {
@@ -69,11 +66,12 @@ public class LaunchMain {
                                 return null;
                             }
 
+
                             @Override
                             public HttpObject proxyToClientResponse(HttpObject httpObject) {
                                 if (httpObject instanceof FullHttpResponse) {
                                     FullHttpResponse fullHttpResponse = (FullHttpResponse) httpObject;
-                                    modifyHttpResponse(originalRequest, fullHttpResponse);
+                                    return modifyHttpResponse(originalRequest, fullHttpResponse);
                                 }
                                 return httpObject;
                             }
@@ -92,28 +90,47 @@ public class LaunchMain {
                 }).start();
     }
 
-    private static void modifyHttpResponse(HttpRequest orgRequest, FullHttpResponse httpResponse) {
+    private static FullHttpResponse modifyHttpResponse(HttpRequest orgRequest, FullHttpResponse httpResponse) {
         KeyPair keyPair = new KeyPair(orgRequest.getUri(), ParserJson.getMethodType(orgRequest.getMethod().toString()));
-        log.info("Org KeyPair: " + keyPair.toString() + "\n Org Response: "
-                + httpResponse.content().toString(Charset.forName("utf-8")));
+        String acceptRanges = httpResponse.headers().get(HttpHeaderNames.ACCEPT_RANGES);
+        if (acceptRanges != null && acceptRanges.contains("bytes")) {
+            log.info("Org KeyPair: " + keyPair.toString() + "\n Org Response: Whoops! maybe the type of response is byte stream, so we don't show it");
+        } else {
+            log.info("Org KeyPair: " + keyPair.toString() + "\n Org Response: " + httpResponse.content().toString(Charset.forName("utf-8")));
+        }
         if (type == 1) {
             CompositeByteBuf contentBuf = (CompositeByteBuf) httpResponse.content();
-            for (Map.Entry<KeyPair, String> entry : map.entrySet()) {
+            for (Map.Entry<KeyPair, DataPair> entry : map.entrySet()) {
                 KeyPair tmp = entry.getKey();
                 if (tmp.equals(keyPair)) {
                     try {
-                        String newResp = entry.getValue();
-                        log.info("Find Match KeyPair: " + tmp.toString() + "\n New Response: " + newResp);
-                        ByteBuf newContent = Unpooled.wrappedBuffer(newResp.getBytes("utf-8"));
-                        int len = newContent.readableBytes();
-                        contentBuf.clear().writeBytes(newContent);
-                        httpResponse.headers().set("content-length", len);
+                        DataPair data = entry.getValue();
+                        int wait = data.getWait();
+                        Object resp = data.getValue();
+                        if (resp instanceof String) {
+                            log.info("Find Match KeyPair: " + tmp.toString() + "\n New Response: " + resp.toString());
+                            ByteBuf newContent = Unpooled.wrappedBuffer(resp.toString().getBytes("utf-8"));
+                            int len = newContent.readableBytes();
+                            contentBuf.clear().writeBytes(newContent);
+                            httpResponse.headers().set(HttpHeaderNames.CONTENT_LENGTH, len);
+                        } else {
+                            log.info("Find Match KeyPair: " + tmp.toString() + "\n New HttpStatusCode: " + ((HttpResponseStatus) resp).code());
+                            httpResponse = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, ((HttpResponseStatus) resp));
+                            log.info(httpResponse.toString());
+                        }
+                        if (wait != 0) {
+                            log.info("Org KeyPair: " + keyPair.toString() + " response sleep for {} seconds", wait);
+                            Thread.sleep(wait * 1000);
+                        }
                     } catch (UnsupportedEncodingException e) {
                         // TODO Auto-generated catch block
+                        log.error(e.getMessage());
+                    } catch (InterruptedException e) {
                         log.error(e.getMessage());
                     }
                 }
             }
         }
+        return httpResponse;
     }
 }
