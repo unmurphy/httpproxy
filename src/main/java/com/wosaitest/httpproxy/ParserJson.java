@@ -1,9 +1,6 @@
 package com.wosaitest.httpproxy;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,9 +20,9 @@ public class ParserJson {
 
     private static final Logger log = LoggerFactory.getLogger(ParserJson.class);
     private static final String FILE_PATH = System.getProperty("user.dir") + "/jsondata/";
-    private static Map<KeyPair, String> map = new HashMap<>();
+    private static Map<KeyPair, DataPair> map = new HashMap<>();
 
-    public static Map<KeyPair, String> getJsonString(String filename) {
+    public static Map<KeyPair, DataPair> getJsonString(String filename) {
         String filepath = FILE_PATH + filename;
         File file = new File(filepath);
         if (!file.exists()) {
@@ -41,9 +38,10 @@ public class ParserJson {
 //					path = path.replaceAll("/\\*", "/\\\\w*");
                     path = path.replaceAll("/\\*", "/[A-Za-z0-9\\-]+");
                 }
-                String method = json.get("method").toString();
-                String response = json.get("response").toString();
-                map.put(new KeyPair(path, getMethodType(method)), response);
+                MethodType method = getMethodType(json.get("method").toString());
+                int wait = Util.getWait(json.get("wait").toString());
+                Object response = Util.getResponse(json.get("response").toString());
+                map.put(new KeyPair(path, method), new DataPair(wait, response));
             }
             return map;
         } catch (FileNotFoundException e) {
@@ -77,4 +75,6 @@ public class ParserJson {
         }
         return methodType;
     }
+
+
 }
